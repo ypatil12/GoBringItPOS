@@ -10,6 +10,8 @@ import java.sql.SQLException;
 public class DBConnection {
     // Your IP address must be static otherwise this will not work. You //can get your Ip address
     //From Network and security in Windows.
+    //TODO: JOSH - here is where the name name doesn't work for some reason. jtds link is
+    // attached for reference: http://jtds.sourceforge.net/faq.html
     String ip = "us-cdbr-iron-east-02.cleardb.net:3306";
     // This is default if you are using JTDS driver.
     String classs = "net.sourceforge.jtds.jdbc.Driver";
