@@ -10,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        android.defaultConfig.vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -27,5 +28,11 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation project(path: ':mysql-connector-java-5.1.48')
+    implementation project(path: ':activation')
+    implementation project(path: ':additionnal')
+    implementation project(path: ':javax.mail')
+    implementation project(path: ':mail')
+    implementation files('libs\\StarIOPort3.1.jar')
+    implementation files('libs\\starioextension.jar')
+
 }

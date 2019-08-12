@@ -2,17 +2,21 @@ package com.example.gbiprint;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.gbiprint.connections.DBConnection;
-import com.mysql.jdbc.Statement;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.example.gbiprint.backend.updatedReadEmails;
+
+import java.io.File;
+import java.io.FileInputStream;
+
 
 /**
  * Main screen for activity
@@ -30,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        showOrders();
         Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 goToSecondActivity();
             }
         });
+        showOrders(getApplicationContext());
     }
 
     /**
@@ -51,46 +55,16 @@ public class MainActivity extends AppCompatActivity {
     /**
      * TODO: figure out what data we actually need to display, connect the StarPrint sdk
      */
-    private void showOrders(){
+    private void showOrders(Context context){
         TextView tv = (TextView)findViewById(R.id.textView2);
-        DBConnection db = new DBConnection();
-        Connection conn = db.CONN();
-        System.out.println(conn);
+        tv.setText("Test");
 
-        //set the query
-
-        String query = "select * from orders where service_id=13 and button=1";
-        String customer_name = "";
-        String date = "" ;
-        String orderName = "";
-        double price = -1;
-        double quantity = -1;
         try {
-            Statement stmnt = (Statement) conn.createStatement();
-            ResultSet rs = stmnt.executeQuery(query);
-            System.out.println(rs);
-            //gets the order information from orders DB
-            //todo: should move this to another class
-            while (rs.next()) {
-                customer_name = rs.getString("user_name");
-                date = rs.getDate("datetime").toString();
-                int order_id= rs.getInt("order_id");
-                String query2 = "select * from carts where order_id =" + order_id;
-                Statement stmnt2 = (Statement) conn.createStatement();
-                ResultSet rs2 = stmnt2.executeQuery(query2);
-                //gets the name, price, and quantity from the order list
-                while(rs2.next()) {
-                    orderName = rs.getString("name");
-                    price = rs.getDouble("price");
-                    quantity = rs.getInt("quantity");
-                }
-            }
-
-        } catch (SQLException e) {
+            updatedReadEmails.runMain(this,context);
+        } catch (Exception e) {
             System.out.println("The error is: " + e.getMessage());
             e.printStackTrace();
         }
-        tv.setText(customer_name + date + orderName + price + quantity);
     }
 
 }
