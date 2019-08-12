@@ -56,8 +56,6 @@ public class MainActivity extends AppCompatActivity {
      * TODO: figure out what data we actually need to display, connect the StarPrint sdk
      */
     private void showOrders(Context context){
-        TextView tv = (TextView)findViewById(R.id.textView2);
-        tv.setText("Test");
 
         try {
             updatedReadEmails.runMain(this,context);

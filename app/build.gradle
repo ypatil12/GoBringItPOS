@@ -30,9 +30,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation project(path: ':activation')
     implementation project(path: ':additionnal')
-    implementation project(path: ':javax.mail')
     implementation project(path: ':mail')
     implementation files('libs\\StarIOPort3.1.jar')
     implementation files('libs\\starioextension.jar')
+    implementation project(path: ':javax.mail')
 
 }

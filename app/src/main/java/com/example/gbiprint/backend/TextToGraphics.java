@@ -23,7 +23,7 @@ public class TextToGraphics{
         final Rect bounds = new Rect();
         TextPaint textPaint = new TextPaint() {
             {
-                setColor(Color.WHITE);
+                setColor(Color.BLACK);
                 setTextAlign(Paint.Align.LEFT);
                 setTextSize(20f);
                 setAntiAlias(true);
@@ -40,12 +40,10 @@ public class TextToGraphics{
         }
         final Bitmap bmp = Bitmap.createBitmap(maxWidth , mTextLayout.getHeight(),
                 Bitmap.Config.ARGB_8888);
-        bmp.eraseColor(Color.BLACK);// just adding black background
+        bmp.eraseColor(Color.WHITE);// just adding black background
         final Canvas canvas = new Canvas(bmp);
         mTextLayout.draw(canvas);
-        File file = new File(context.getFilesDir(),"data.png");
-        System.out.println("Context: " + context.getFilesDir());
-        System.out.println(file.getAbsolutePath());
+        File file = new File(context.getExternalFilesDir(null),"data.png");
         FileOutputStream stream = new FileOutputStream(file); //create your FileOutputStream
         bmp.compress(Bitmap.CompressFormat.PNG, 85, stream);
         bmp.recycle();

@@ -16,8 +16,6 @@ import com.starmicronics.stario.StarPrinterStatus;
 import com.starmicronics.starioextension.ICommandBuilder;
 import com.starmicronics.starioextension.StarIoExt;
 
-import com.starmicronics.starioextension.StarIoExtManager;
-
 import java.io.*;
 import java.util.*;
 import javax.mail.*;
@@ -43,13 +41,14 @@ public class updatedReadEmails {
         props.setProperty("mail.store.protocol", "imaps");
 
         try {
+            Session session = Session.getDefaultInstance(props, null);
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            Store store = session.getStore("imaps");
+            store.connect("imap.gmail.com", "gbidevilspizzeria@gmail.com", "DevilsP123");
 
             for(int i = 0; i < 999999; i++){
-                Session session = Session.getDefaultInstance(props, null);
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                StrictMode.setThreadPolicy(policy);
-                Store store = session.getStore("imaps");
-                store.connect("imap.gmail.com", "gbidevilspizzeria@gmail.com", "DevilsP123");
+
                 Folder inbox = store.getFolder("Inbox");
                 inbox.open(Folder.READ_ONLY);
                 Message messages[] = inbox.getMessages();
@@ -65,10 +64,12 @@ public class updatedReadEmails {
                         for (int partCount = 0; partCount < numberOfParts; partCount++) {
                             MimeBodyPart part = (MimeBodyPart) multiPart.getBodyPart(partCount);
                             content = part.getContent().toString();
+                            System.out.println(content);
                         }
                     }
                     else {
                         content = message.getContent().toString();
+                        System.out.println(content);
                     }
 
                     int index = content.indexOf("<img src");
@@ -80,60 +81,42 @@ public class updatedReadEmails {
 
                     TextToGraphics.foo(content,context);
                     String[] array = context.fileList();
-                    System.out.println(array);
 
-                    File f =new File(context.getFilesDir(), "data.png");
+
+                    //gets file from internal storage and converts to bits
+                    File f =new File(context.getExternalFilesDir(null), "data.png");
                     FileInputStream fis = new FileInputStream(f);
                     Bitmap b = BitmapFactory.decodeStream(fis);
                     fis.close();
-                    ImageView img=(ImageView)activity.findViewById(R.id.imageView);
-                    img.setImageBitmap(b);
+                    TextView tv = activity.findViewById(R.id.textView);
+                    tv.setText(content);
 
-                    String input = message.getContent().toString();
-
-//                    // Create the print job
-//                    DocPrintJob job = service.createPrintJob();
-//                    //Create the Doc. You can pass set of attributes(type of PrintRequestAttributeSet) as the
-//                    //3rd parameter specifying the page setup, orientation, no. of copies, etc instead of null.
-//                    File file = new File("order" + h + "_2.txt");
-//                    InputStream is = new BufferedInputStream(new FileInputStream(file));
-//                    Doc doc = new SimpleDoc(is, flavor, null);
-//
-//                    int numCopies = 2;
-//                    // set up the attributes
-//                    PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
-//                    attributes.add(new Copies(numCopies));
-//
-//                    //Order to print, (can pass attributes instead of null)
-//                    try {
-//                        job.print(doc, attributes);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-
+                    //Calls the print method below to print to star printer
+//                    print(b,context);
 
                 }
-
-//                Folder trash = store.getFolder("[Gmail]/Old Orders");
-//                for(Message message:messages) {
-//                    inbox.copyMessages(new Message[] {message}, trash);
-//                }
-
-
+                Folder trash = store.getFolder("[Gmail]/Trash");
+                for(Message message:messages) {
+                    inbox.copyMessages(new Message[] {message}, trash);
+                }
+////
                 try{
                     Thread.sleep(30000);
                 }
                 catch(InterruptedException ex) {
                     Thread.currentThread().interrupt();
                 }
-                store.close();
             }
+            store.close();
+
         } catch (NoSuchProviderException e) {
             e.printStackTrace();
             System.exit(1);
         } catch (MessagingException e) {
             e.printStackTrace();
             System.exit(2);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -141,11 +124,14 @@ public class updatedReadEmails {
      * Creates the
      * @param bitImage
      */
-    public void print(Bitmap bitImage, Context context) throws StarIOPortException {
+    private static void print(Bitmap bitImage, Context context) throws StarIOPortException {
+
+        //converts the bitmap to byte array
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] data = stream.toByteArray();
 
+        //Builds the command with the data we have
         ICommandBuilder builder = StarIoExt.createCommandBuilder(StarGraphic);
         builder.beginDocument();
         builder.append(data);
@@ -153,15 +139,11 @@ public class updatedReadEmails {
         builder.appendCutPaper(ICommandBuilder.CutPaperAction.PartialCutWithFeed);
         builder.endDocument();
 
-
-
         //get the port
         StarIOPort port = null;
+
+        //todo: imput legitimate port name
         port = StarIOPort.getPort("TCP:192.168.1.130", "", 10000, context);
-
-        // Print end monitoring -Start
-        StarPrinterStatus status = port.beginCheckedBlock();
-
 
         //this is what actually sends the print request
         Result res = sendCommands(builder.getCommands(), port, context);
