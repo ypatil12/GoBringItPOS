@@ -23,7 +23,7 @@ import javax.mail.internet.MimeBodyPart;
 
 import static com.starmicronics.starioextension.StarIoExt.Emulation.StarGraphic;
 
-public class updatedReadEmails {
+public class ReadEmails {
 
     public enum Result {
         Success,
@@ -35,7 +35,7 @@ public class updatedReadEmails {
         ErrorReadPort,
     }
 
-    public static void runMain (Activity activity, Context context) throws IOException {
+    public static void readEmails(Activity activity, Context context) throws IOException {
         System.out.println("WE ARE IN THE MAIN METHOD");
         Properties props = new Properties();
         props.setProperty("mail.store.protocol", "imaps");
@@ -79,7 +79,7 @@ public class updatedReadEmails {
                     content = content.replaceAll("<br>", "\n");
                     content = content.replaceAll("\\<[^>]*>","");
 
-                    TextToGraphics.foo(content,context);
+                    TextToGraphics.convert(content,context);
                     String[] array = context.fileList();
 
 
@@ -91,8 +91,8 @@ public class updatedReadEmails {
                     TextView tv = activity.findViewById(R.id.textView);
                     tv.setText(content);
 
-                    //Calls the print method below to print to star printer
-//                    print(b,context);
+//                    Calls the print method below to print to star printer
+//                    StarPrinterFunctions.print(b,context);
 
                 }
                 Folder trash = store.getFolder("[Gmail]/Trash");
@@ -120,90 +120,9 @@ public class updatedReadEmails {
         }
     }
 
-    /**
-     * Creates the
-     * @param bitImage
-     */
-    private static void print(Bitmap bitImage, Context context) throws StarIOPortException {
-
-        //converts the bitmap to byte array
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] data = stream.toByteArray();
-
-        //Builds the command with the data we have
-        ICommandBuilder builder = StarIoExt.createCommandBuilder(StarGraphic);
-        builder.beginDocument();
-        builder.append(data);
-        builder.append((byte) 0x0a);
-        builder.appendCutPaper(ICommandBuilder.CutPaperAction.PartialCutWithFeed);
-        builder.endDocument();
-
-        //get the port
-        StarIOPort port = null;
-
-        //todo: imput legitimate port name
-        port = StarIOPort.getPort("TCP:192.168.1.130", "", 10000, context);
-
-        //this is what actually sends the print request
-        Result res = sendCommands(builder.getCommands(), port, context);
-        System.out.println(res);
-    }
 
 
 
-    /**
-     * This sends a command to the printer and receives a response of status back.
-     * @param commands
-     * @param port
-     * @param context
-     * @return
-     */
-    public static Result sendCommands(byte[] commands, StarIOPort port, Context context) {
 
-        Result result = Result.ErrorUnknown;
 
-        try {
-            if (port == null) {
-                result = Result.ErrorOpenPort;
-                return result;
-            }
-
-            StarPrinterStatus status;
-
-            result = Result.ErrorBeginCheckedBlock;
-
-            status = port.beginCheckedBlock();
-
-            if (status.offline) {
-                throw new StarIOPortException("A printer is offline");
-            }
-
-            result = Result.ErrorWritePort;
-
-            port.writePort(commands, 0, commands.length);
-
-            result = Result.ErrorEndCheckedBlock;
-
-            port.setEndCheckedBlockTimeoutMillis(30000); // 30000mS!!!
-
-            status = port.endCheckedBlock();
-
-            if (status.coverOpen) {
-                throw new StarIOPortException("Printer cover is open");
-            }
-            else if (status.receiptPaperEmpty) {
-                throw new StarIOPortException("Receipt paper is empty");
-            }
-            else if (status.offline) {
-                throw new StarIOPortException("Printer is offline");
-            }
-
-            result = Result.Success;
-        } catch (StarIOPortException e) {
-            System.out.println("There is an error with the print.");
-        }
-
-        return result;
-    }
 }

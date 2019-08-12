@@ -18,7 +18,7 @@ import java.io.IOException;
 
 public class TextToGraphics{
 
-    static void foo(final String text, Context context) throws IOException {
+    static void convert(final String text, Context context) throws IOException {
 
         final Rect bounds = new Rect();
         TextPaint textPaint = new TextPaint() {
