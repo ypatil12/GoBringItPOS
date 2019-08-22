@@ -25,14 +25,15 @@ public class StarPrinterFunctions {
     public static void print(Bitmap bitImage, Context context) throws StarIOPortException {
 
         //converts the bitmap to byte array
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] data = stream.toByteArray();
-
+//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//        bitImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//        byte[] data = stream.toByteArray();
+//
         //Builds the command with the data we have
         ICommandBuilder builder = StarIoExt.createCommandBuilder(StarGraphic);
         builder.beginDocument();
-        builder.append(data);
+        builder.appendBitmap(bitImage, true);
+//        builder.append(data);
         builder.append((byte) 0x0a);
         builder.appendCutPaper(ICommandBuilder.CutPaperAction.PartialCutWithFeed);
         builder.endDocument();
