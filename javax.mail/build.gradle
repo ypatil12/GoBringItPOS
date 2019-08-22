@@ -1,2 +1,2 @@
 configurations.maybeCreate("default")
-artifacts.add("default", file('javax.mail.jar'))
+artifacts.add("default", file('../mail/mail.jar'))

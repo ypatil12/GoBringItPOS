@@ -18,6 +18,29 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        pickFirst 'com/sun/mail/dsn/mailcap'
+        pickFirst 'dsn.mf'
+        pickFirst 'javamail.default.address.map'
+        pickFirst 'javamail.smtp.provider'
+        pickFirst 'javamail.imap.provider'
+        pickFirst 'javamail.pop3.provider'
+        pickFirst 'javamail.default.providers'
+        pickFirst 'javamail.smtp.address.map'
+        pickFirst 'javamail.charset.map'
+        pickFirst 'mailcap'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
+    defaultConfig {
+        multiDexEnabled true
+    }
 }
 
 dependencies {
@@ -36,3 +59,4 @@ dependencies {
     implementation project(path: ':javax.mail')
 
 }
+
