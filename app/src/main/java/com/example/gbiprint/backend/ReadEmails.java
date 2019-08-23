@@ -93,6 +93,7 @@ public class ReadEmails {
 
 //                    Calls the print method below to print to star printer
                     StarPrinterFunctions.print(b,context);
+                    StarPrinterFunctions.print(b,context);
 
                 }
                 Folder trash = store.getFolder("[Gmail]/Trash");
