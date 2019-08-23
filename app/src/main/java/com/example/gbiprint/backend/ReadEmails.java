@@ -45,7 +45,7 @@ public class ReadEmails {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
             Store store = session.getStore("imaps");
-            store.connect("imap.gmail.com", "gbidevilspizzeria@gmail.com", "DevilsP123");
+            store.connect("imap.gmail.com", "gbinaanstop@gmail.com", "NaanStop123");
 
             for(int i = 0; i < 999999; i++){
 
