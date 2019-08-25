@@ -42,7 +42,7 @@ public class StarPrinterFunctions {
         StarIOPort port = null;
 
         //todo: input legitimate port name
-        port = StarIOPort.getPort("TCP:192.168.1.243", "", 10000, context);
+        port = StarIOPort.getPort("TCP:192.168.0.25", "", 10000, context);
 
         //this is what actually sends the print request
         ReadEmails.Result res = sendCommands(builder.getCommands(), port, context);
