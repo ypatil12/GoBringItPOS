@@ -25,13 +25,13 @@ public class TextToGraphics{
             {
                 setColor(Color.BLACK);
                 setTextAlign(Paint.Align.LEFT);
-                setTextSize(20f);
+                setTextSize(35f);
                 setAntiAlias(true);
             }
         };
         textPaint.getTextBounds(text, 0, text.length(), bounds);
         StaticLayout mTextLayout = new StaticLayout(text, textPaint,
-                bounds.width(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+                525, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
         int maxWidth = -1;
         for (int i = 0; i < mTextLayout.getLineCount(); i++) {
             if (maxWidth < mTextLayout.getLineWidth(i)) {
