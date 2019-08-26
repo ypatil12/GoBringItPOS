@@ -25,7 +25,7 @@ public class TextToGraphics{
             {
                 setColor(Color.BLACK);
                 setTextAlign(Paint.Align.LEFT);
-                setTextSize(20f);
+                setTextSize(35f);
                 setAntiAlias(true);
             }
         };
