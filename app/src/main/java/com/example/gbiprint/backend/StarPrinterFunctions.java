@@ -42,7 +42,7 @@ public class StarPrinterFunctions {
         StarIOPort port = null;
 
         //todo: input legitimate port name
-        port = StarIOPort.getPort("TCP:192.168.0.25", "", 10000, context);
+        port = StarIOPort.getPort("TCP:192.168.0.21", "", 10000, context);
 
         //this is what actually sends the print request
         ReadEmails.Result res = sendCommands(builder.getCommands(), port, context);
@@ -68,9 +68,9 @@ public class StarPrinterFunctions {
             StarPrinterStatus status;
             result = ReadEmails.Result.ErrorBeginCheckedBlock;
             status = port.beginCheckedBlock();
-            if (status.offline) {
-                throw new StarIOPortException("A printer is offline");
-            }
+//            if (status.offline) {
+//                throw new StarIOPortException("A printer is offline");
+//            }
             result = ReadEmails.Result.ErrorWritePort;
 
             port.writePort(commands, 0, commands.length);
@@ -81,15 +81,15 @@ public class StarPrinterFunctions {
 
             status = port.endCheckedBlock();
 
-            if (status.coverOpen) {
-                throw new StarIOPortException("Printer cover is open");
-            }
-            else if (status.receiptPaperEmpty) {
-                throw new StarIOPortException("Receipt paper is empty");
-            }
-            else if (status.offline) {
-                throw new StarIOPortException("Printer is offline");
-            }
+//            if (status.coverOpen) {
+//                throw new StarIOPortException("Printer cover is open");
+//            }
+//            else if (status.receiptPaperEmpty) {
+//                throw new StarIOPortException("Receipt paper is empty");
+//            }
+//            else if (status.offline) {
+//                throw new StarIOPortException("Printer is offline");
+//            }
 
             result = ReadEmails.Result.Success;
         } catch (StarIOPortException e) {
